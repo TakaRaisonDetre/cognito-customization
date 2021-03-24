@@ -46,7 +46,7 @@ const AuthScreens = (props)=>{
     case 'signedIn':
       return <Home />  
     default :
-    return <></>;
+    return <><Text>Intro page</Text></>;
 
   }
    
@@ -61,9 +61,7 @@ const App=()=> {
       <Authenticator 
       usernameAttributes="email" 
       hideDefault={true}
-      authState='SignUp'
-      onStateChange={(authState)=>console.log('authState ...', authState)}>
-
+      authState='SignUp'>
        <AuthScreens/>
       <StatusBar style="auto" />
       </Authenticator>
@@ -72,13 +70,14 @@ const App=()=> {
   );
 }
 
-export default App;
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
 });
+
+export default App;

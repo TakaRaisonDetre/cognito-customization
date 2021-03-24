@@ -32,7 +32,7 @@ const ForgotPassword = (props) => {
     }
   }
 
-  const validateSignup=()=>{
+  function validateSignup(){
       const errors = {};
       errors.email = validateEmail(values.email);
     return errors
