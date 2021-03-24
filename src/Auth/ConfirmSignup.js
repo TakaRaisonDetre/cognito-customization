@@ -1,81 +1,92 @@
-import React , {useState}from 'react'
-import {View, Text, Button , TextInput, TouchableOpacity,  Alert} from 'react-native'
-import {validateEmail} from '../validation'
-import {Auth} from 'aws-amplify'
-import FormStyle from '../styles/FormStyles'
 
+import React from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import {Auth} from 'aws-amplify';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const ConfirmSignUp = (props) =>{
+import {FormStyles} from '../styles/FormStyles';
+import useForm from '../useForm';
+import {validateEmail, validateCode} from '../validation';
 
-const [state, setState] = useState({email:'',confirmationCode:''});
-const [error, setErrors] = useState({email: ''});
+export default function ConfirmSignUp(props) {
+  const initialValues = {email: '', code: ''};
 
-
-
-const OnSubmit= async()=>{
-    const {email: username, confirmationCode : code} = state ; 
-    const emailError = validateEmail(state.email)
-    
-    if(emailError){
-        setErrors({email:emailError})
-    } else {
-      try{
-        const user = await Auth.confirmSignUp(username, code);
-        setState({confirmationCode:''})
-        props.onStateChange('signIn')
-      } catch(e) {
-          console.error(e.message)
-          Alert.alert(e.message)
-      }
-       
-    }
-}
-
-
-if (props.authState === 'confirmSignUp')
-  return  (
-      <View style={FormStyle.container}>
-          <Text style={FormStyle.title}>Confirm SignUp</Text>
-          <Text style={FormStyle.label}>Email</Text>
-        <TextInput
-        placeholder="Enter Email"
-        style={FormStyle.input}
-        onChangeText ={(text)=> setState({...state, email:text.toLowerCase()})}
-        value={state.email} />
-        <Text style={FormStyle.error}>{error.email}</Text>
-         <Text style={FormStyle.label} >Confirmation Code</Text>
-        <TextInput
-        placeholder="Enter Confirmation Code"
-        style={FormStyle.input}
-        onChangeText ={(text)=> setState({...state, confirmationCode:text.toLowerCase()})}
-        value={state.confirmationCode} />
-       
-
-    <TouchableOpacity
-    style={FormStyle.button}
-    onPress={OnSubmit}
-    >
-        <Text style={FormStyle.buttonText}>Confirm Sign Up</Text>
-    </TouchableOpacity>
-
-<View style={FormStyle.links}>
-     <Button 
-          onPress={()=>props.onStateChange('signIn', {} )}
-          title = "back to Sign In"
-          color="grey"
-          accessibilityLabel="back to signIn" />
-
-      <Button 
-          onPress={()=>props.onStateChange('signUp', {} )}
-          title = "back to Sign Up"
-          color="grey"
-          accessibilityLabel="back to sign up" />
-</View>
-          
-      </View>
+  const {values, onSubmit, onChange, errors} = useForm(
+    confirmSignUp,
+    initialValues,
+    validateSignup,
   );
-  else return <></>
+
+  const [error, setError] = React.useState();
+
+  async function confirmSignUp() {
+    const {email: username, code} = values;
+    try {
+      await Auth.confirmSignUp(username, code);
+      props.onStateChange('signIn', {});
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  function validateSignup() {
+    const errors = {};
+    errors.email = validateEmail(values.email);
+    errors.code = validateCode(values.code);
+    return errors;
+  }
+
+  return (
+    <View style={FormStyles.container}>
+      <View style={FormStyles.bgcontainer}>
+        <Text style={FormStyles.title}>Confirm Signup</Text>
+        <Text style={{textAlign: 'center'}}>
+          Check your email for confirmation code.
+        </Text>
+        <View style={FormStyles.labelWrapper}>
+          <Icon name="email" size={13} style={FormStyles.labelIcon} />
+          <Text style={FormStyles.labelText}> Email </Text>
+        </View>
+        <TextInput
+          style={FormStyles.textbox}
+          autoCompleteType="email"
+          onChangeText={(text) => onChange({name: 'email', value: text})}
+          value={values.email}
+          placeholder="Enter Email"
+        />
+        {errors.email && <Text style={FormStyles.error}>{errors.email}</Text>}
+        <View style={FormStyles.labelWrapper}>
+          <Icon name="lock" size={13} style={FormStyles.labelIcon} />
+          <Text style={FormStyles.labelText}> Confirmation Code *</Text>
+        </View>
+
+        <TextInput
+          style={FormStyles.textbox}
+          placeholder="Enter your confirmation code"
+          placeholderTextColor="#808389"
+          type="text"
+          value={values.code}
+          onChangeText={(text) => onChange({name: 'code', value: text})}
+        />
+        {errors.code && <Text style={FormStyles.error}>{errors.code}</Text>}
+
+        <TouchableOpacity style={FormStyles.button} onPress={onSubmit}>
+          <Text style={FormStyles.buttonText}>Confirm</Text>
+        </TouchableOpacity>
+        <View style={FormStyles.formLinks}>
+          <TouchableWithoutFeedback
+            onPress={() => props.onStateChange('signIn', {})}>
+            <Text style={FormStyles.linkText}>Back to Sign In</Text>
+          </TouchableWithoutFeedback>
+        </View>
+        {error && <Text style={FormStyles.error}>{error}</Text>}
+      </View>
+    </View>
+  );
 }
-
-export default ConfirmSignUp 
-

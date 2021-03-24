@@ -1,53 +1,78 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View, Button} from 'react-native';
 
 // auth 
-import Amplify from 'aws-amplify'
+import Amplify,{Auth} from 'aws-amplify'
 import awsconfig from './aws-exports'
 import {
   Authenticator,  
-  SignIn, 
-  
-  ConfirmSignIn, 
-  ForgotPassword,
+// SignIn, 
+//  ConfirmSignIn, 
+//  ForgotPassword,
 } from 'aws-amplify-react-native'
 
 import SignUp from './src/Auth/Signup'
+import SignIn from './src/Auth/Signin'
 import ConfirmSignUp from './src/Auth/ConfirmSignup'
+import ForgotPassword from './src/Auth/ForgotPassword'
+import ChangePassword from './src/Auth/ChangePassword'
 
 Amplify.configure(awsconfig);
 
-const Home =(props)=>{
-  console.log('authState', props.authState)
-  if(props.authState==='signUp') {
-    return <Text>Home</Text>
-  } else {
-    return <Text>Not SignIn</Text>; 
-  }
+function Home(props){
+return (
+  <View>
+   <Text>Welcome</Text>
+    <Button title="Sign Out" onPress={()=>Auth.signOut()}/>
+  </View>
+)
 }
 
 
-export default function App() {
+const AuthScreens = (props)=>{
+  console.log("props", props.authState)
+  switch(props.authState){
+    case 'signIn': 
+     return <SignIn {...props}/>
+    case 'signUp':
+      return <SignUp {...props}/>
+    case 'forgotPassword':
+      return <ForgotPassword {...props} />  
+    case 'confirmSignUp':
+      return <ConfirmSignUp {...props}/>  
+    case 'changePassword':
+      return <ChangePassword {...props}/>
+    case 'signedIn':
+      return <Home />  
+    default :
+    return <></>;
+
+  }
+   
+}
+
+
+
+
+const App=()=> {
   return (
     <View style={styles.container}>
       <Authenticator 
       usernameAttributes="email" 
       hideDefault={true}
-      authState='SignIn'
+      authState='SignUp'
       onStateChange={(authState)=>console.log('authState ...', authState)}>
         <Home/>
-        <SignUp/>
-        <SignIn/>
-        <ConfirmSignIn/>
-        <ConfirmSignUp/>
-        <ForgotPassword/>
+       <AuthScreens/>
       <StatusBar style="auto" />
       </Authenticator>
     
     </View>
   );
 }
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
