@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-raisonmusicstreaming-dev-123312-authRole",
+      "UnauthRoleArn": "arn:aws:iam::602722784296:role/amplify-raisonmusicstreaming-dev-123312-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::602722784296:role/amplify-raisonmusicstreaming-dev-123312-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-raisonmusicstreaming-dev-123312-deployment",
+      "UnauthRoleName": "amplify-raisonmusicstreaming-dev-123312-unauthRole",
+      "StackName": "amplify-raisonmusicstreaming-dev-123312",
+      "StackId": "arn:aws:cloudformation:us-east-1:602722784296:stack/amplify-raisonmusicstreaming-dev-123312/abf43500-8c51-11eb-af66-12bd192597a3",
+      "AmplifyAppId": "d1jqia3bs208ma"
+    },
+    "categories": {
+      "auth": {
+        "raisonmusicstreaming25b53bb2": {}
+      }
+    }
+  }
+}
