@@ -39,7 +39,7 @@ const onSubmitSignin =async()=> {
     }
 }
 
-const validateSignup=()=>{
+function validateSignup(){
 const errors = {};
 errors.email = validateEmail(values.email);
 errors.password = validatePassword(values.password);

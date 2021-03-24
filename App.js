@@ -63,7 +63,7 @@ const App=()=> {
       hideDefault={true}
       authState='SignUp'
       onStateChange={(authState)=>console.log('authState ...', authState)}>
-        <Home/>
+
        <AuthScreens/>
       <StatusBar style="auto" />
       </Authenticator>
